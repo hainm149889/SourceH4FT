@@ -1,21 +1,41 @@
-import React from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Keyboard,
-  Image,
-  ImageBackground,
 } from 'react-native';
 
 const ScreenA = ({navigation}) => {
+
+  const [nameUser, setNameUser] = useState('');
+
   const onPressHandler = () => {
     navigation.navigate('User', {ItemID: '1', ItemName: 'Item from screen A'});
   };
+
+  useEffect(() => {
+    getDataFromLogin();
+  }, []);
+
+  const getDataFromLogin = () => {
+    try {
+      AsyncStorage.getItem('Username').then(
+        value => {
+          if(value !== null){
+            setNameUser(value);
+          }
+        }
+      )
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Text>Screen A</Text>
+      <Text>Welcome {nameUser} to your app!</Text>
       <TouchableOpacity
         style={{
           paddingVertical: 10,

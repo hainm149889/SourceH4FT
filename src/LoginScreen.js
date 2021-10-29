@@ -10,8 +10,10 @@ import {
 import InputTextComponent from '../components/InputTextComponent';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {TouchableOpacity} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
-const LoginScreen = () => {
+const LoginScreen = ({navigation}) => {
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [validateDescription, setValidateDescripton] = useState('');
@@ -25,16 +27,22 @@ const LoginScreen = () => {
     setPassword(value);
     setEnableDescription(false);
   };
-  const onPressLogin = () => {
-    if (!userName.trim() && userName.length < 6) {
+  const onPressLogin = async () => {
+    if (!userName.trim() || userName.length < 6) {
       setEnableDescription(true);
       setValidateDescripton('Please input username at least 6 characters!');
-    } else if (!password.trim() && password.length < 3) {
+    } else if (!password.trim() || password.length < 3) {
       setEnableDescription(true);
       setValidateDescripton('Please input password at least 3 characters!');
     } else {
       setEnableDescription(false);
-      Alert.alert('Login Successfull!');
+      try {
+        await AsyncStorage.setItem('Username', userName);
+        await AsyncStorage.setItem('Password', password);
+        navigation.navigate('User');
+      } catch (error) {
+        console.log('error', error);
+      }
     }
   };
   return (
@@ -42,11 +50,17 @@ const LoginScreen = () => {
       {enableDescription && (
         <View style={styles.viewDescription}>
           <TouchableOpacity
-            style={{margin: 5}}
+            style={{margin: 3, width: '10%', alignItems: 'center'}}
             onPress={() => setEnableDescription(false)}>
             <FontAwesome name="close" size={20} />
           </TouchableOpacity>
-          <Text style={{color: 'red', fontSize: 14}}>
+          <Text
+            style={{
+              color: 'red',
+              fontSize: 14,
+              width: '90%',
+              textAlign: 'center',
+            }}>
             {validateDescription}
           </Text>
         </View>
@@ -65,24 +79,53 @@ const LoginScreen = () => {
             <Text style={styles.titleLoginForm}>Fill your heart's info</Text>
           </View>
           <View style={styles.formInputInfo}>
-            <InputTextComponent
-              nameIcon="user-circle"
-              placeholderTxt="Username"
-              onChangeText={changeTextUserName}
-              value={userName}
-            />
-            <InputTextComponent
-              nameIcon="key"
-              placeholderTxt="Password"
-              onChangeText={changeTextPassword}
-              value={password}
-            />
+            <View
+              style={{
+                flexDirection: 'row',
+                width: '100%',
+                marginLeft: 20,
+              }}>
+              <InputTextComponent
+                nameIcon="user-circle"
+                placeholderTxt="Username"
+                onChangeText={changeTextUserName}
+                value={userName}
+              />
+              <TouchableOpacity>
+                <AntDesign
+                  name="close"
+                  style={{color: 'grey', marginLeft: -30, marginTop: 10}}
+                  size={20}
+                />
+              </TouchableOpacity>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                width: '100%',
+                marginLeft: 20,
+              }}>
+              <InputTextComponent
+                nameIcon="key"
+                placeholderTxt="Password"
+                state={changeTextPassword}
+                value={password}
+                booleanCheck={true}
+              />
+              <TouchableOpacity>
+                <AntDesign
+                  name="close"
+                  style={{color: 'grey', marginLeft: -30, marginTop: 10}}
+                  size={20}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
           <View style={styles.formBtn}>
             <TouchableOpacity style={styles.btn}>
               <Text style={styles.txtOfBtn}>Register</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.btn} onPress={onPressLogin}>
+            <TouchableOpacity style={styles.btn} onPress={() => onPressLogin()}>
               <Text style={styles.txtOfBtn}>Login</Text>
             </TouchableOpacity>
           </View>
@@ -99,6 +142,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   viewDescription: {
+    width: '100%',
     paddingVertical: 7,
     backgroundColor: 'yellow',
     flexDirection: 'row',

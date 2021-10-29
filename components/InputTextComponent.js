@@ -1,8 +1,11 @@
-import React from "react";
-import { StyleSheet, TextInput, View } from "react-native";
+import React, {useState} from "react";
+import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-const InputTextComponent = ({value, placeholderTxt, onChangeText, nameIcon}) => {
-    return (
+import AntDesign from 'react-native-vector-icons/AntDesign';
+
+const InputTextComponent = ({value, placeholderTxt, onChangeText, nameIcon, booleanCheck}) => {
+
+  return (
       <View style={styles.formInput}>
         <FontAwesome5 name={nameIcon} size={20} style={styles.iconAtHead} />
         <TextInput
@@ -10,6 +13,7 @@ const InputTextComponent = ({value, placeholderTxt, onChangeText, nameIcon}) => 
           placeholder={placeholderTxt}
           value={value}
           onChangeText={onChangeText}
+          secureTextEntry={booleanCheck}
         />
       </View>
     );
@@ -22,7 +26,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
     marginBottom: 10,
-    borderRadius: 5,
+    borderRadius: 20,
   },
   iconAtHead:{
     margin: 10,
@@ -33,6 +37,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 5,
     paddingHorizontal: 14,
+    borderRadius: 20,
   },
 });
 export default InputTextComponent;

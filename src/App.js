@@ -14,7 +14,6 @@ import {
   ImageBackground,
 } from 'react-native';
 import ScreenA from './ScreenA';
-import ScreenB from './ScreenB';
 import { createStackNavigator } from '@react-navigation/stack';
 import Entypo from 'react-native-vector-icons/Entypo';
 import LoginScreen from './LoginScreen';
@@ -49,7 +48,7 @@ function AppStack () {
 function App(){
   return (
     <NavigationContainer>
-      <Stack.Navigator
+      <Tab.Navigator
         screenOptions={({route}) => ({
           tabBarIcon: ({focused, size, color}) => {
             let iconName;
@@ -78,16 +77,16 @@ function App(){
         //   inactiveColor: 'green',
         //   barStyle={backgroundColor: 'blue'}
       >
-        <Stack.Screen
+        <Tab.Screen
           name="Home"
-          component={ScreenA}
+          component={LoginScreen}
           options={{
             // header: () => null,
             tabBarBadge: 5,
           }}
         />
-        <Stack.Screen name="User" component={LoginScreen} />
-      </Stack.Navigator>
+        <Tab.Screen name="User" component={ScreenA} />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 }
